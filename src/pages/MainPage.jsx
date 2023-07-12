@@ -11,8 +11,6 @@ import ListMovies from '../components/ListMovies';
 const MainPage = () => {
   const state = useSelector((store) => store.movieReducer);
 
-  console.log(state);
-
   const dispatch = useDispatch();
 
   useEffect(() => {

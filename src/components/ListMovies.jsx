@@ -1,17 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
+import { baseImgUrl, options } from '../constants/constants';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const ListMovies = ({ genre }) => {
-  console.log(genre);
+  const [movies, setMovies] = useState([]);
+
+  useEffect(() => {
+    // listelene kategoriye ait film verierini çekme
+    axios
+      .get(`/discover/movie?with_genres=${genre.id}`, options)
+      .then((res) => setMovies(res.data.results))
+      .catch((err) => console.log(err));
+  }, []);
+
   return (
-    <div>
+    <div className="p-4">
       <h1>{genre.name}</h1>
-      <Splide>
-        <SplideSlide>Film1</SplideSlide>
-        <SplideSlide>Film2</SplideSlide>
-        <SplideSlide>Film3</SplideSlide>
-        <SplideSlide>Film4</SplideSlide>
+      <Splide
+        options={{
+          autoWidth: true,
+          gap: '10px',
+          pagination: false,
+        }}
+      >
+        {movies.map((movie) => (
+          <SplideSlide key={movie.id}>
+            <Link to={`/movie/${movie.id}`}>
+              <img
+                className="movie"
+                src={`${baseImgUrl}${movie.poster_path}`}
+              />
+            </Link>
+          </SplideSlide>
+        ))}
       </Splide>
     </div>
   );
